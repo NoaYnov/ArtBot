@@ -1,52 +1,120 @@
-def pixel_to_ascii(image):
-    ascii_str = ""
-    for pixel in image.getdata():
-        # Convert pixel to grayscale
-        gray = int((pixel[0] + pixel[1] + pixel[2]) / 3)
-        # Map grayscale value to ASCII character
-        ascii_str += "@" if gray < 128 else " "
-    return ascii_str
-def image_to_ascii(image_path, width=100):
-    from PIL import Image
-    try:
-        image = Image.open(image_path)
-    except Exception as e:
-        print(f"Error opening image: {e}")
-        return ""
-    
-    # Resize image to specified width while maintaining aspect ratio
-    aspect_ratio = image.height / image.width
-    height = int(aspect_ratio * width)
-    image = image.resize((width, height))
-    
-    # Convert image to RGB if not already in that mode
-    if image.mode != 'RGB':
-        image = image.convert('RGB')
-    
-    # Convert pixels to ASCII
-    ascii_str = pixel_to_ascii(image)
-    
-    # Format the ASCII string into lines
-    ascii_lines = [ascii_str[i:i + width] for i in range(0, len(ascii_str), width)]
-    print("\n".join(ascii_lines))
-    return "\n".join(ascii_lines)
+from PIL import Image
+from PIL import ImageFilter
+import html
 
-def save_ascii_to_html(ascii_str, output_path):
-    try:
-        with open(output_path, 'w') as f:
-            f.write(f"<pre>{ascii_str}</pre>")
+class PixelToASCII:
+    """A class to convert images to ASCII art."""
+
+    def pixel_to_ascii(image):
+        ascii_chars = "@%#*+=-:. "
+        width, height = image.size
+        for y in range(height):
+            for x in range(width):
+                pixel = image.getpixel((x, y))
+                gray = int((pixel[0] + pixel[1] + pixel[2]) / 3)
+                yield ascii_chars[gray // 32]
+            yield "\n"
+
+    def image_to_ascii(image_path, width=100):
+
+        try:
+            image = Image.open(image_path)
+        except Exception as e:
+            print(f"Error opening image: {e}")
+            return ""
+        
+
+        aspect_ratio = image.height / image.width
+        height = int(aspect_ratio * width)
+        image = image.resize((width, height))
+        
+
+        if image.mode != 'RGB':
+            image = image.convert('RGB')
+        
+
+        ascii_str = PixelToASCII.pixel_to_ascii(image)
+        
+    
+        ascii_str = ''.join(ascii_str)
+        ascii_lines = [ascii_str[i:i + width] for i in range(0, len(ascii_str), width)]
+        print("\n".join(ascii_lines))
+        return "\n".join(ascii_lines)
+
+    def save_ascii_to_html(ascii_str, output_path):
+    # Échapper les caractères HTML spéciaux
+        escaped_ascii = html.escape(ascii_str)
+
+        html_content = f"""<!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <title>ASCII Art</title>
+            <style>
+                body {{
+                    background-color: #f4f4f4;
+                    font-family: 'Courier New', Courier, monospace;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    height: 100vh;
+                    margin: 0;
+                }}
+                .ascii-container {{
+                    background-color: #ffffff;
+                    border: 2px solid #ccc;
+                    border-radius: 12px;
+                    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+                    padding: 20px;
+                    max-width: 90%;
+                    overflow: auto;
+                }}
+                pre {{
+                    margin: 0;
+                    font-size: 14px;
+                    line-height: 1.4;
+                    white-space: pre;
+                }}
+            </style>
+        </head>
+        <body>
+            <div class="ascii-container">
+                <pre>{escaped_ascii}</pre>
+            </div>
+        </body>
+        </html>"""
+
+        with open(output_path, 'w', encoding='utf-8') as f:
+            f.write(html_content)
+
         print(f"ASCII art saved to {output_path}")
-    except Exception as e:
-        print(f"Error saving ASCII art: {e}")
+            
+        
+        
+
+
+    def resize_and_uncolor_image(image_path, output_path, size=(200, 200), blur_radius=0):
+        with Image.open(image_path) as img:
+            img = img.resize(size)
+            img = img.filter(ImageFilter.GaussianBlur(blur_radius)) 
+            img = img.convert("L")
+            img.save(output_path)
+            print(f"Image resized and saved to {output_path}")
+            
+
+
+
+
         
 def main():
-    image_path = 'imgs/resized_img.jpg'  # Path to the resized image
-    output_path = 'ascii_art.html'  # Output file for ASCII art
-    width = 100  # Width of the ASCII art
+    image_path = "imgs/img.jpg"
+    output_path = "ascii_art.html"
+    PixelToASCII.resize_and_uncolor_image(image_path, "imgs/resized_image.png", size=(200, 200), blur_radius=0)
+    image_path = "imgs/resized_image.png"
+    ascii_art = PixelToASCII.image_to_ascii(image_path)
+    PixelToASCII.save_ascii_to_html(ascii_art, output_path)
+
     
-    ascii_art = image_to_ascii(image_path, width)
-    
-    if ascii_art:
-        save_ascii_to_html(ascii_art, output_path)
+
 if __name__ == "__main__":
     main()
