@@ -15,31 +15,33 @@ class PixelToASCII:
                 yield ascii_chars[gray // 32]
             yield "\n"
 
-    def image_to_ascii(image_path, width=100):
+    @staticmethod
+    def image_to_ascii(image_input, width=100):
+        from PIL import Image
 
         try:
-            image = Image.open(image_path)
+            # Charger l’image si c’est un chemin
+            if isinstance(image_input, str):
+                image = Image.open(image_input)
+            else:
+                image = image_input
         except Exception as e:
             print(f"Error opening image: {e}")
             return ""
-        
 
         aspect_ratio = image.height / image.width
         height = int(aspect_ratio * width)
         image = image.resize((width, height))
-        
 
         if image.mode != 'RGB':
             image = image.convert('RGB')
-        
 
         ascii_str = PixelToASCII.pixel_to_ascii(image)
-        
-    
         ascii_str = ''.join(ascii_str)
         ascii_lines = [ascii_str[i:i + width] for i in range(0, len(ascii_str), width)]
-        print("\n".join(ascii_lines))
+
         return "\n".join(ascii_lines)
+
 
     def save_ascii_to_html(ascii_str, output_path):
     # Échapper les caractères HTML spéciaux
@@ -88,33 +90,3 @@ class PixelToASCII:
             f.write(html_content)
 
         print(f"ASCII art saved to {output_path}")
-            
-        
-        
-
-
-    def resize_and_uncolor_image(image_path, output_path, size=(200, 200), blur_radius=0):
-        with Image.open(image_path) as img:
-            img = img.resize(size)
-            img = img.filter(ImageFilter.GaussianBlur(blur_radius)) 
-            img = img.convert("L")
-            img.save(output_path)
-            print(f"Image resized and saved to {output_path}")
-            
-
-
-
-
-        
-def main():
-    image_path = "imgs/img.jpg"
-    output_path = "ascii_art.html"
-    PixelToASCII.resize_and_uncolor_image(image_path, "imgs/resized_image.png", size=(200, 200), blur_radius=0)
-    image_path = "imgs/resized_image.png"
-    ascii_art = PixelToASCII.image_to_ascii(image_path)
-    PixelToASCII.save_ascii_to_html(ascii_art, output_path)
-
-    
-
-if __name__ == "__main__":
-    main()
