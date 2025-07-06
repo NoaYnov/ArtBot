@@ -1,8 +1,12 @@
 from setuptools import setup, find_packages
+from pathlib import Path
+
+this_directory = Path(__file__).parent
+long_description = (this_directory / "README.md").read_text(encoding="utf-8")
 
 setup(
     name="artbot_Philippe_Noa",
-    version="0.1.1",
+    version="0.1.5",
     packages=find_packages(),
     install_requires=[
         "fastapi",
@@ -18,6 +22,8 @@ setup(
     },
     author="GambeyNoa/MathieuPhilippe",
     description="Un convertisseur d'images vers ASCII à partir d'URLs Unsplash",
+    long_description=long_description,
+    long_description_content_type="text/markdown",
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",

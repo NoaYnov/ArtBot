@@ -18,19 +18,25 @@ class ImageFetcher:
             'Referer': 'https://unsplash.com/'
         }
         response = requests.get(url, headers=headers)
+        print("[DEBUG] Response status:", response.status_code)
+        print("[DEBUG] Response length:", len(response.text))
+        print("[DEBUG] Content-Type:", response.headers.get("Content-Type", ""))
+        
         soup = BeautifulSoup(response.text, 'html.parser')
         img_tags = soup.find_all('img')
+        print("[DEBUG] Nombre de balises <img>:", len(img_tags))
 
-        img_urls = []
+        image_urls = []
         for img in img_tags:
-            srcset = img.get('srcset')
-            if srcset:
-                candidates = [s.strip().split(' ')[0] for s in srcset.split(',')]
-                if candidates:
-                    img_urls.append(candidates[-1])  # version haute résolution
-            elif img.get('src'):
-                img_urls.append(urljoin(url, img['src']))
-        return img_urls
+            src = img.get("src")
+            srcset = img.get("srcset")
+            if src:
+                image_urls.append(src)
+            elif srcset:
+                src = srcset.split(",")[0].split()[0]
+                image_urls.append(src)
+        return image_urls
+
 
 
     @staticmethod
