@@ -2,3 +2,6 @@
 img/
 __pycache__/
 result/
+dist/
+*.egg-info/
+
