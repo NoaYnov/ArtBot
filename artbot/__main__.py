@@ -36,7 +36,8 @@ def cli_mode(args):
 
         # ASCII
         ascii_art = PixelToASCII.image_to_ascii(image, width=args.size)
-        output_path = "ascii_art.html"
+        os.makedirs("result", exist_ok=True)
+        output_path = "result/ascii_art.html"
         PixelToASCII.save_ascii_to_html(ascii_art, output_path)
 
         print(f"✅ ASCII art généré dans {output_path}")
