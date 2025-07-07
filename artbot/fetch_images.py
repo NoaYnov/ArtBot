@@ -54,7 +54,6 @@ class ImageFetcher:
         for img in img_tags:
             srcset = img.get("srcset")
             if srcset:
-                # Prend l’URL avec la résolution la plus élevée
                 srcset_items = [item.strip().split(" ") for item in srcset.split(",")]
                 best = sorted(srcset_items, key=lambda x: int(x[1][:-1]) if len(x) > 1 and x[1][-1] == 'w' else 0, reverse=True)
                 if best:

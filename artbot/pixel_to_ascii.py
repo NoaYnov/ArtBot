@@ -46,7 +46,7 @@ class PixelToASCII:
             return ""
 
         aspect_ratio = image.height / image.width
-        height = max(1, int(aspect_ratio * width * 0.5))  # empêche height = 0
+        height = max(1, int(aspect_ratio * width * 0.5))
         image = image.resize((width, height))
 
 
@@ -54,7 +54,7 @@ class PixelToASCII:
             image = image.convert('RGB')
 
         ascii_str = ''.join(PixelToASCII.pixel_to_ascii(image))
-        print(ascii_str)  # Debug: print the ASCII string to console
+        print(ascii_str) 
         return ascii_str
 
     @staticmethod

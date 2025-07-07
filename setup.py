@@ -6,8 +6,9 @@ long_description = (this_directory / "README.md").read_text(encoding="utf-8")
 
 setup(
     name="artbot_Philippe_Noa",
-    version="0.2.2",
+    version="0.2.4",
     packages=find_packages(),
+    include_package_data=True,
     install_requires=[
         "fastapi",
         "uvicorn",

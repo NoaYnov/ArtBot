@@ -105,3 +105,6 @@ README.md
 ## 📄 Licence
 
 Ce projet est sous licence MIT.
+
+- [PyPI](https://pypi.org/project/artbot-Philippe-Noa/)
+- [GitHub](https://github.com/NoaYnov/ArtBot)
