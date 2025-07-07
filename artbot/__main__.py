@@ -37,6 +37,7 @@ def cli_mode(args):
 
         # Enregistrer image traitee
         processed_image_path = os.path.join("img", "processed_img.jpg")
+        image = image.convert("L")  # Convertit en niveaux de gris
         image.save(processed_image_path)
 
         # ASCII

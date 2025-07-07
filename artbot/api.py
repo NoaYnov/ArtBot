@@ -4,7 +4,7 @@ import os
 
 app = FastAPI()
 
-@app.post("/ascii", response_class=HTMLResponse)
+@app.post("/convert", response_class=HTMLResponse)
 async def post_ascii_html():
     """Générer de l'ASCII art à partir d'une image
 
