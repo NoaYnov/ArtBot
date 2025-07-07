@@ -10,65 +10,75 @@
 
 ---
 
-## 🚀 Installation
+## ⚙️ Option 1 — Exécution en local (via GitHub)
+
+### 🔧 Installation
 
 Assurez-vous d’avoir **Python 3.8+** installé.
 
-### 1. Cloner le dépôt
-
 ```bash
-git clone <url-du-repo>
+git clone https://github.com/NoaYnov/ArtBot
 cd ArtBot
-```
-
-### 2. Installer le projet
-
-```bash
 pip install -e .
 ```
 
-Cela installe toutes les dépendances et rend la commande CLI `artbot` disponible.
+### ▶️ Utilisation
+
+```bash
+python -m artbot --url <PAGE_URL> --index <N> [--blur <RAYON>] [--size <LARGEUR>]
+```
+
+Exemple :
+
+```bash
+python -m artbot --url https://unsplash.com/fr --index 3 --blur 2 --size 80
+```
 
 ---
 
-## 💻 Utilisation en ligne de commande
+## 📦 Option 2 — Installation via PyPI (comme un module)
+
+Le package est disponible sur PyPI sous le nom `artbot-Philippe-Noa`.
+
+### 🔧 Installation
+
+```bash
+pip install artbot-Philippe-Noa
+```
+
+### ▶️ Utilisation via console :
 
 ```bash
 artbot --url <PAGE_URL> --index <N> [--blur <RAYON>] [--size <LARGEUR>]
 ```
 
-### Paramètres :
-- `--url` : URL d'une page contenant des images (ex: [unsplash.com/fr](https://unsplash.com/fr))
-- `--index` : Position de l'image à télécharger (1 = première image)
-- `--blur` : (optionnel) Rayon de flou à appliquer (par défaut : 0)
-- `--size` : (optionnel) Largeur de l'ASCII art en caractères (par défaut : 100)
-
-### Exemple :
+Si la commande `artbot` n’est pas reconnue :
 
 ```bash
-artbot --url https://unsplash.com/fr --index 3 --blur 2 --size 80
+py -m artbot --url <PAGE_URL> --index <N> [--blur <RAYON>] [--size <LARGEUR>]
 ```
-
-➡ Cela télécharge la 3e image, applique un flou, et génère un fichier `ascii_art.html`.
 
 ---
 
-## 🌐 Utilisation en API (FastAPI)
+## 🌐 Lancer l'API FastAPI
 
-### Lancer le serveur API :
+Depuis n’importe quelle version installée :
 
 ```bash
 artbot --serve
 ```
 
-### Endpoints disponibles :
+ou
+
+```bash
+py -m artbot --serve
+```
+
+### Endpoint disponible
 
 #### `POST /ascii`
 
-Retourne le contenu HTML du fichier `ascii_art.html` (généré préalablement par la CLI).
-
-- **Méthode :** `POST`
-- **Réponse :** HTML affichant l’art ASCII
+Retourne le contenu HTML généré (`ascii_art.html`).
 
 ---
 
@@ -81,33 +91,14 @@ artbot/
 ├── fetch_images.py        # Scraping & téléchargement
 ├── pixel_to_ascii.py      # Conversion image → ASCII
 img/
-├── img.jpg                # Image téléchargée
-├── processed_img.jpg      # Image redimensionnée/floutée
+├── img.jpg                # Image brute
+├── processed_img.jpg      # Image floutée/redimensionnée
 result/
-├── ascii_art.html             # Résultat ASCII au format HTML
+├── ascii_art.html         # Résultat HTML
 
 setup.py
 README.md
 ```
-
----
-
-## 🧠 Détails techniques
-
-- `fetch_images.py` :
-  - Scrape les balises `<img>` d'une page HTML.
-  - Télécharge l'image selon l’index spécifié.
-
-- `pixel_to_ascii.py` :
-  - Convertit une image PIL en ASCII avec une largeur définie.
-  - Gère la conversion vers un fichier HTML stylisé.
-
-- `api.py` :
-  - Expose `/ascii` via FastAPI pour afficher le HTML.
-
-- `__main__.py` :
-  - Sert d’interface CLI principale (`--url`, `--index`, `--blur`, `--size`)
-  - Ou lance l’API (`--serve`)
 
 ---
 

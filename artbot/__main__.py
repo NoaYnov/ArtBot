@@ -5,10 +5,15 @@ from artbot.pixel_to_ascii import PixelToASCII
 from PIL import Image, ImageFilter
 
 def cli_mode(args):
+    """Mode CLI pour le traitement d'images
+
+    Args:
+        args (argparse.Namespace): Les arguments de la ligne de commande
+    """
     try:
         img_urls = ImageFetcher.scrape_images(args.url)
         if len(img_urls) < args.index or args.index < 1:
-            print(f"❌ Il n’y a que {len(img_urls)} images trouvées, impossible d’accéder à l’index {args.index}")
+            print(f" Il n’y a que {len(img_urls)} images trouvees, impossible d’acceder à l’index {args.index}")
             return
 
         img_url = img_urls[args.index - 1]
@@ -17,7 +22,7 @@ def cli_mode(args):
 
         response = ImageFetcher.download_single_image(img_url, image_path)
         if not response:
-            print("❌ Téléchargement échoué.")
+            print(" Telechargement echoue.")
             return
 
         image = Image.open(image_path)
@@ -30,7 +35,7 @@ def cli_mode(args):
         if args.blur > 0:
             image = image.filter(ImageFilter.GaussianBlur(args.blur))
 
-        # Enregistrer image traitée
+        # Enregistrer image traitee
         processed_image_path = os.path.join("img", "processed_img.jpg")
         image.save(processed_image_path)
 
@@ -40,16 +45,20 @@ def cli_mode(args):
         output_path = "result/ascii_art.html"
         PixelToASCII.save_ascii_to_html(ascii_art, output_path)
 
-        print(f"✅ ASCII art généré dans {output_path}")
+        print(f" ASCII art genere dans {output_path}")
 
     except Exception as e:
-        print(f"❌ Erreur : {e}")
+        print(f" Erreur : {e}")
 
 def serve_api():
+    """    Lancer l'API FastAPI pour servir l'ASCII art
+    """
     import uvicorn
     uvicorn.run("artbot.api:app", host="0.0.0.0", port=8000, reload=True)
 
 def main():
+    """Point d'entrée principal pour l'application Artbot.
+    """
     parser = argparse.ArgumentParser(description="Artbot CLI et API")
     parser.add_argument("--serve", action="store_true", help="Lancer l’API FastAPI")
     parser.add_argument("--url", help="URL de la page web contenant des images")
